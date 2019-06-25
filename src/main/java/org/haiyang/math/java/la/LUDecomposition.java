@@ -1,18 +1,18 @@
-package org.haiyang.math.la;
+package org.haiyang.math.java.la;
 
 /**
  * Data class representing an LU decomposition
  */
 public class LUDecomposition {
-    private final Matrix l;
-    private final Matrix u;
+    private final MatrixJava l;
+    private final MatrixJava u;
 
     /**
      * Construct an LU
      * @param l
      * @param u
      */
-    public LUDecomposition(Matrix l, Matrix u) {
+    public LUDecomposition(MatrixJava l, MatrixJava u) {
         this.l = l;
         this.u = u;
     }
@@ -22,7 +22,7 @@ public class LUDecomposition {
      *
      * @return
      */
-    public Matrix l() {
+    public MatrixJava l() {
         return l;
     }
 
@@ -31,7 +31,7 @@ public class LUDecomposition {
      *
      * @return
      */
-    public Matrix u() {
+    public MatrixJava u() {
         return u;
     }
 }

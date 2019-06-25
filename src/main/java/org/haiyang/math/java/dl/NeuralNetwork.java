@@ -1,15 +1,15 @@
-package org.haiyang.math.dl.networks;
+package org.haiyang.math.java.dl;
 
 import java.util.List;
 import java.util.function.Function;
 
-import org.haiyang.math.la.Matrix;
+import org.haiyang.math.java.la.MatrixJava;
 
 /**
  * An simple interface for building a NN.
  * This API follows the example in http://neuralnetworksanddeeplearning.com/chap1.html
  */
-public interface Network {
+public interface NeuralNetwork {
     /**
      * Return an {@link int[]} of layers, starting from the input layer
      *
@@ -18,23 +18,23 @@ public interface Network {
     List<Integer> getLayerSizes();
 
     /**
-     * Return a {@link List} of {@link Matrix}, an N * 1 vector
+     * Return a {@link List} of {@link MatrixJava}, an N * 1 vector
      *
      * @return
      */
-    List<Matrix> getBiases();
+    List<MatrixJava> getBiases();
 
     /**
-     * Returns a {@link List} of {@link Matrix} representing the weights connecting the layers
+     * Returns a {@link List} of {@link MatrixJava} representing the weights connecting the layers
      *
      * @return
      */
-    List<Matrix> getWeights();
+    List<MatrixJava> getWeights();
 
     /**
      * Get the activation function used in this network
      *
      * @return
      */
-    Function<Matrix, Matrix> getActivationFunction();
+    Function<MatrixJava, MatrixJava> getActivationFunction();
 }

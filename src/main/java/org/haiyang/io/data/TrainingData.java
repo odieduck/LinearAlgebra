@@ -1,4 +1,4 @@
-package org.haiyang.math.dl;
+package org.haiyang.io.data;
 
 /**
  * A generic wrapper class for training data

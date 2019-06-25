@@ -1,4 +1,6 @@
-package org.haiyang.math.la;
+package org.haiyang.math.java.la;
+
+import org.haiyang.math.la.MatrixJNI;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -10,7 +12,7 @@ import static java.lang.System.arraycopy;
  * This class represents the implementation of a matrix and its operations.
  * The implementation is pure java and is very slow compare to netlib-java
  */
-public class Matrix {
+public class MatrixJava {
     private final double[][] data;
     private final int row;
     private final int col;
@@ -21,7 +23,7 @@ public class Matrix {
      * @param row
      * @param col
      */
-    public Matrix(int row, int col) {
+    public MatrixJava(int row, int col) {
         if (row == 0 || col == 0) {
             throw new RuntimeException("Cannot create 0-dimension matrix!");
         }
@@ -31,11 +33,11 @@ public class Matrix {
     }
 
     /**
-     * Creating a {@link Matrix} from a 2-d array
+     * Creating a {@link MatrixJava} from a 2-d array
      *
      * @param data
      */
-    public Matrix(double[][] data) {
+    public MatrixJava(double[][] data) {
         if (data.length == 0 || data[0].length == 0) {
             throw new RuntimeException("Cannot create 0-dimension matrix!");
         }
@@ -45,14 +47,14 @@ public class Matrix {
     }
 
     /**
-     * Creating a new {@link Matrix} instance from an existing instance
+     * Creating a new {@link MatrixJava} instance from an existing instance
      *
-     * @param matrix
+     * @param matrixJava
      */
-    public Matrix(Matrix matrix) {
-        this.data = matrix.data;
-        this.row = matrix.row;
-        this.col = matrix.col;
+    public MatrixJava(MatrixJava matrixJava) {
+        this.data = matrixJava.data;
+        this.row = matrixJava.row;
+        this.col = matrixJava.col;
     }
 
     /**
@@ -65,7 +67,7 @@ public class Matrix {
      * @param std
      * @return
      */
-    public static Matrix getGaussionRandomMatrix(int row, int col, double mean, double std) {
+    public static MatrixJava getGaussionRandomMatrix(int row, int col, double mean, double std) {
         Random random = new Random();
         double[][] data = new double[row][col];
         for (int i = 0; i < row; i++) {
@@ -74,7 +76,7 @@ public class Matrix {
             }
         }
 
-        return new Matrix(data);
+        return new MatrixJava(data);
     }
 
     /**
@@ -85,16 +87,16 @@ public class Matrix {
      * @param col
      * @return
      */
-    public static Matrix getGaussionRandomMatrix(int row, int col) {
+    public static MatrixJava getGaussionRandomMatrix(int row, int col) {
         return getGaussionRandomMatrix(row, col, 0, 1);
     }
 
-    public static Matrix identity(int n) {
+    public static MatrixJava identity(int n) {
         double[][] data = new double[n][n];
         for (int i = 0; i < n; i++) {
             data[i][i] = 1;
         }
-        return new Matrix(data);
+        return new MatrixJava(data);
     }
 
     /**
@@ -102,32 +104,32 @@ public class Matrix {
      *
      * @return
      */
-    public Matrix replicate() {
+    public MatrixJava replicate() {
         double[][] data = new double[row][col];
         for (int i = 0; i < row; i++) {
             data[i] = Arrays.copyOf(this.data[i], col);
         }
 
-        return new Matrix(data);
+        return new MatrixJava(data);
     }
 
     /**
-     * Add a {@link Matrix} and create a new instance.
+     * Add a {@link MatrixJava} and create a new instance.
      *
      * @param in
      * @return
      */
-    public Matrix add(Matrix in) {
+    public MatrixJava add(MatrixJava in) {
         return add(in, true);
     }
 
     /**
-     * Minus a {@link Matrix} and create a new instance.
+     * Minus a {@link MatrixJava} and create a new instance.
      *
      * @param in
      * @return
      */
-    public Matrix minus(Matrix in) {
+    public MatrixJava minus(MatrixJava in) {
         return add(in, false);
     }
 
@@ -137,7 +139,7 @@ public class Matrix {
      * @param scalar
      * @return
      */
-    public Matrix add(double scalar) {
+    public MatrixJava add(double scalar) {
         return transform(v -> v + scalar);
     }
 
@@ -147,7 +149,7 @@ public class Matrix {
      * @param scalar
      * @return
      */
-    public Matrix minus(double scalar) {
+    public MatrixJava minus(double scalar) {
         return add(-scalar);
     }
 
@@ -157,29 +159,29 @@ public class Matrix {
      * @param scalar
      * @return
      */
-    public Matrix mul(double scalar) {
+    public MatrixJava mul(double scalar) {
         return transform(v -> v * scalar);
     }
 
     /**
-     * Perform elements-wise multiplication. The two matrix must have the same dimension
+     * Perform elements-wise multiplication. The two matrixJava must have the same dimension
      *
-     * @param matrix
+     * @param matrixJava
      * @return
      */
-    public Matrix mul(Matrix matrix) {
-        if (row == matrix.row && col == matrix.col) {
+    public MatrixJava mul(MatrixJava matrixJava) {
+        if (row == matrixJava.row && col == matrixJava.col) {
             double[][] res = new double[row][col];
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
-                    res[i][j] = data[i][j] * matrix.data[i][j];
+                    res[i][j] = data[i][j] * matrixJava.data[i][j];
                 }
             }
 
-            return new Matrix(res);
+            return new MatrixJava(res);
         }
 
-        throw new RuntimeException("Two matrix must have the same dimension for mul");
+        throw new RuntimeException("Two matrixJava must have the same dimension for mul");
     }
 
     /**
@@ -193,7 +195,7 @@ public class Matrix {
      * @param right
      * @return
      */
-    public Matrix dot(Matrix right) {
+    public MatrixJava dot(MatrixJava right) {
         int rightRow = right.row;
         int rightCol = right.col;
         if (col == rightRow) {
@@ -212,7 +214,7 @@ public class Matrix {
                 Arrays.fill(resBuffer, 0.0);
             }
 
-            return new Matrix(result);
+            return new MatrixJava(result);
         }
 
         throw new RuntimeException(
@@ -225,15 +227,15 @@ public class Matrix {
      *
      * @return
      */
-    public Matrix inverse() {
+    public MatrixJava inverse() {
         if (row == col) {
             int n = data.length;
             LUDecomposition lu = lu();
-            Matrix ret = null;
+            MatrixJava ret = null;
             for (int i = 0; i < n; i++) {
                 double[][] b = new double[n][1];
                 b[i][0] = 1;
-                Matrix x = solve(new Matrix(b), lu);
+                MatrixJava x = solve(new MatrixJava(b), lu);
                 ret = ret == null ? x : ret.appendRight(x);
             }
 
@@ -251,8 +253,8 @@ public class Matrix {
     public LUDecomposition lu() {
         int n = data.length;
         if (n == col) {
-            Matrix u = replicate();
-            Matrix l = identity(data.length);
+            MatrixJava u = (MatrixJava) replicate();
+            MatrixJava l = identity(data.length);
 
             for (int k = 0; k < n - 1; k++) {
                 for (int j = k + 1; j < n; j++) {
@@ -275,7 +277,7 @@ public class Matrix {
      * @param b
      * @return
      */
-    public Matrix solve(Matrix b) {
+    public MatrixJava solve(MatrixJava b) {
         return solve(b, lu());
     }
 
@@ -286,7 +288,7 @@ public class Matrix {
      * @param right
      * @return
      */
-    public Matrix appendRight(Matrix right) {
+    public MatrixJava appendRight(MatrixJava right) {
         if (row == right.row) {
             double[][] res = new double[row][col + right.col];
             for (int i = 0; i < row; i++) {
@@ -294,7 +296,7 @@ public class Matrix {
                 arraycopy(right.data[i], 0, res[i], col, right.col);
             }
 
-            return new Matrix(res);
+            return new MatrixJava(res);
         }
 
         throw new RuntimeException("matrix must have the same row count!");
@@ -306,7 +308,7 @@ public class Matrix {
      * @param left
      * @return
      */
-    public Matrix appendLeft(Matrix left) {
+    public MatrixJava appendLeft(MatrixJava left) {
         return left.appendRight(this);
     }
 
@@ -316,7 +318,7 @@ public class Matrix {
      * @param down
      * @return
      */
-    public Matrix appendDown(Matrix down) {
+    public MatrixJava appendDown(MatrixJava down) {
         if (col == down.col) {
             double[][] res = new double[row + down.row][col];
             for (int i = 0; i < row; i++) {
@@ -325,10 +327,10 @@ public class Matrix {
             for (int i = 0; i < down.row; i++) {
                 res[row + i] = Arrays.copyOf(down.data[i], down.col);
             }
-            return new Matrix(res);
+            return new MatrixJava(res);
         }
 
-        throw new RuntimeException("Matrix must have the same col count!");
+        throw new RuntimeException("MatrixJava must have the same col count!");
     }
 
     /**
@@ -337,7 +339,7 @@ public class Matrix {
      * @param up
      * @return
      */
-    public Matrix appendUp(Matrix up) {
+    public MatrixJava appendUp(MatrixJava up) {
         return up.appendDown(this);
     }
 
@@ -348,7 +350,7 @@ public class Matrix {
      * @param transformer
      * @return
      */
-    public Matrix transform(DoubleUnaryOperator transformer) {
+    public MatrixJava transform(DoubleUnaryOperator transformer) {
         double[][] result = new double[row][col];
 
         for (int i = 0; i < row; i++) {
@@ -357,7 +359,7 @@ public class Matrix {
             }
         }
 
-        return new Matrix(result);
+        return new MatrixJava(result);
     }
 
     /**
@@ -365,7 +367,7 @@ public class Matrix {
      *
      * @return
      */
-    public Matrix transpose() {
+    public MatrixJava transpose() {
         double[][] res = new double[col][row];
 
         for (int i = 0; i < col; i++) {
@@ -374,7 +376,7 @@ public class Matrix {
             }
         }
 
-        return new Matrix(res);
+        return new MatrixJava(res);
     }
 
     /**
@@ -481,7 +483,7 @@ public class Matrix {
      * @param flag
      * @return
      */
-    private Matrix add(Matrix in, boolean flag) {
+    private MatrixJava add(MatrixJava in, boolean flag) {
         if (row == in.row && col == in.col) {
             double[][] result = new double[row][col];
 
@@ -491,7 +493,7 @@ public class Matrix {
                 }
             }
 
-            return new Matrix(result);
+            return new MatrixJava(result);
         }
 
         throw new RuntimeException(
@@ -508,12 +510,12 @@ public class Matrix {
      * @param lu
      * @return
      */
-    private Matrix solve(Matrix b, LUDecomposition lu) {
+    private MatrixJava solve(MatrixJava b, LUDecomposition lu) {
         if (b.row == row && b.col == 1) {
             int n = data.length;
 
             // forward substitution, solving ld = b
-            Matrix d = new Matrix(new double[n][1]);
+            MatrixJava d = new MatrixJava(new double[n][1]);
             for (int i = 0; i < n; i++) {
                 double sum = 0;
                 for (int j = 0; j < i; j++) {
@@ -525,7 +527,7 @@ public class Matrix {
             }
 
             // back propagation, solving Ux = d
-            Matrix x = new Matrix(new double[n][1]);
+            MatrixJava x = new MatrixJava(new double[n][1]);
             for (int i = n - 1; i >= 0; i--) {
                 double sum = 0;
                 for (int j = i + 1; j < n; j++) {

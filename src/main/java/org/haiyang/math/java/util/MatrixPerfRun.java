@@ -1,9 +1,9 @@
-package org.haiyang.math.util;
+package org.haiyang.math.java.util;
 
 import java.util.Random;
 
 import com.github.fommil.netlib.BLAS;
-import org.haiyang.math.la.Matrix;
+import org.haiyang.math.java.la.MatrixJava;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +14,7 @@ public class MatrixPerfRun {
         double range = 1e3;
         int warmup = 100;
         System.out.println("warming up...");
-        Matrix input = randMatrix(n, n, range);
+        MatrixJava input = randMatrix(n, n, range);
         for (int i = 0; i < warmup; i++) {
             input = randMatrix(n, n, range);
         }
@@ -23,7 +23,7 @@ public class MatrixPerfRun {
 
         long start = System.nanoTime();
 
-        Matrix inversed = input.inverse();
+        MatrixJava inversed = input.inverse();
 
         long checkpoint = System.nanoTime();
 
@@ -31,13 +31,13 @@ public class MatrixPerfRun {
 
         start = System.nanoTime();
 
-        Matrix result = input.dot(inversed);
+        MatrixJava result = input.dot(inversed);
 
         checkpoint = System.nanoTime();
 
         System.out.println("mul time: " + ((checkpoint - start) / 1000000) + "ms");
 
-        assertMatrixEquals(Matrix.identity(n), result);
+        assertMatrixEquals(MatrixJava.identity(n), result);
 
         System.out.println("Verified!");
 
@@ -46,7 +46,7 @@ public class MatrixPerfRun {
         double[] inArray = input.toArray();
         double[] invArray = inversed.toArray();
         double[] ret = new double[n * n];
-        double[] expected = Matrix.identity(n).toArray();
+        double[] expected = MatrixJava.identity(n).toArray();
 
         start = System.nanoTime();
 
@@ -68,7 +68,7 @@ public class MatrixPerfRun {
      * @param b
      * @param precision
      */
-    public static void assertMatrixEquals(Matrix a, Matrix b, double precision) {
+    public static void assertMatrixEquals(MatrixJava a, MatrixJava b, double precision) {
         assertEquals(a.getRowCount(), b.getRowCount());
         assertEquals(a.getColCount(), b.getColCount());
 
@@ -86,7 +86,7 @@ public class MatrixPerfRun {
      * @param col
      * @return
      */
-    public static Matrix randMatrix(int row, int col, double range) {
+    public static MatrixJava randMatrix(int row, int col, double range) {
         double[][] data = new double[row][col];
         Random r = new Random();
         for (int i = 0; i < row; i++) {
@@ -95,10 +95,10 @@ public class MatrixPerfRun {
             }
         }
 
-        return new Matrix(data);
+        return new MatrixJava(data);
     }
 
-    public static Matrix randMatrix(int row, int col) {
+    public static MatrixJava randMatrix(int row, int col) {
         return randMatrix(row, col, 2 * 1e3);
     }
 
@@ -108,14 +108,14 @@ public class MatrixPerfRun {
      * @param a
      * @param b
      */
-    public static void assertMatrixEquals(Matrix a, Matrix b) {
+    public static void assertMatrixEquals(MatrixJava a, MatrixJava b) {
         assertMatrixEquals(a, b, 1e-6);
     }
 
     /**
      * Print the matrix to command line
      */
-    public static void print(Matrix m) {
+    public static void print(MatrixJava m) {
         System.out.println();
 
         for (int i = 0; i < m.getRowCount(); i++) {

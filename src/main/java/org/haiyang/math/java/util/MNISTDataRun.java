@@ -1,4 +1,4 @@
-package org.haiyang.math.util;
+package org.haiyang.math.java.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,14 +7,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import org.haiyang.math.dl.DeltaFunction;
-import org.haiyang.math.dl.TrainingData;
-import org.haiyang.math.dl.gd.StochasticGradientDescent;
-import org.haiyang.math.dl.networks.FeedForwardNetwork;
-import org.haiyang.math.la.Matrix;
+import org.haiyang.math.java.dl.DeltaFunctionJava;
+import org.haiyang.io.data.TrainingData;
+import org.haiyang.math.java.dl.gd.StochasticGradientDescent;
+import org.haiyang.math.java.dl.networks.FeedForwardNeuralNetwork;
+import org.haiyang.math.java.la.MatrixJava;
 
-import static org.haiyang.math.dl.activate.ActivateFunctions.SIGMOID;
-import static org.haiyang.math.dl.data.MNISTDataLoader.loadDataAsMatrix;
+import static org.haiyang.math.java.dl.activate.ActivateFunctionsJava.SIGMOID;
+import static org.haiyang.io.data.MNISTDataLoader.loadDataAsMatrix;
 
 /**
  * Running simple FFN for hand written digits recognition
@@ -26,10 +26,10 @@ public class MNISTDataRun {
     public static final int IMAGE_DATA_LENGTH = 784;
 
     public static void main(String[] args) throws IOException {
-        String trainingDataPath = "/Volumes/Unix/LinearAlgebra/train-images-idx3-ubyte.gz";
-        String trainingDataLabelsPath = "/Volumes/Unix/LinearAlgebra/train-labels-idx1-ubyte.gz";
-        String testDataPath = "/Volumes/Unix/LinearAlgebra/t10k-images-idx3-ubyte.gz";
-        String testDataLabelPath = "/Volumes/Unix/LinearAlgebra/t10k-labels-idx1-ubyte.gz";
+        String trainingDataPath = "./train-images-idx3-ubyte.gz";
+        String trainingDataLabelsPath = "./train-labels-idx1-ubyte.gz";
+        String testDataPath = "./t10k-images-idx3-ubyte.gz";
+        String testDataLabelPath = "./t10k-labels-idx1-ubyte.gz";
 
         ByteBuffer trainingDataBytes = ByteBuffer.wrap(
                 new GZIPInputStream(new FileInputStream(trainingDataPath)).readAllBytes());
@@ -46,13 +46,13 @@ public class MNISTDataRun {
         System.out.println(testDataBytes.capacity());
         System.out.println(testDataLabelBytes.capacity());
 
-        List<TrainingData<Matrix, Matrix>> trainingData = loadDataAsMatrix(trainingDataBytes, trainingDataLabelBytes);
+        List<TrainingData<MatrixJava, MatrixJava>> trainingData = loadDataAsMatrix(trainingDataBytes, trainingDataLabelBytes);
         System.out.println("Done loading training data");
-        List<TrainingData<Matrix, Matrix>> testData = loadDataAsMatrix(testDataBytes, testDataLabelBytes);
+        List<TrainingData<MatrixJava, MatrixJava>> testData = loadDataAsMatrix(testDataBytes, testDataLabelBytes);
         System.out.println("Done loading testing data");
 
         // Creating a new network
-        FeedForwardNetwork ffn = new FeedForwardNetwork(Arrays.asList(IMAGE_DATA_LENGTH, 30, 10), SIGMOID);
+        FeedForwardNeuralNetwork ffn = new FeedForwardNeuralNetwork(Arrays.asList(IMAGE_DATA_LENGTH, 30, 10), SIGMOID);
 
         // Creating the strategy to gradient descent
         // 30 runs
@@ -65,8 +65,8 @@ public class MNISTDataRun {
         StochasticGradientDescent sgd = new StochasticGradientDescent(trainingData, epochs, miniBatchSize, eta, lambda);
         // Using quadratic cost function
         //                ffn = sgd.descent(ffn, trainingData.subList(testCount, allCount), (x, y) -> x.argmax() == y.argmax(),
-        //                        DeltaFunction.QUADRATIC);
+        //                        DeltaFunctionJava.QUADRATIC);
         // Using cross-entropy cost function
-        ffn = sgd.descent(ffn, testData, (x, y) -> x.argmax() == y.argmax(), DeltaFunction.CROSS_ENTROPY);
+        ffn = sgd.descent(ffn, testData, (x, y) -> x.argmax() == y.argmax(), DeltaFunctionJava.CROSS_ENTROPY);
     }
 }

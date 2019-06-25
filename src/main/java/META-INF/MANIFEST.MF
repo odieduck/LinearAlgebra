@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: org.haiyang.math.util.MNISTDataRun
+Main-Class: org.haiyang.math.java.util.MNISTDataRun
 
