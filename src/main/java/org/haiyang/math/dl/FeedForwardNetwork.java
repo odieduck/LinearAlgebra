@@ -176,28 +176,22 @@ public class FeedForwardNetwork {
 
         newBiases.set(newBiases.size() - 1, delta);
         // compute weight delta
-//        double[] weightDelta =
-
-
-        newWeights.set(newWeights.size() - 1, delta.dot(activations.get(activations.size() - 2)
-                .transpose()));
+        double[] weightDelta = MatrixJNI.daxpy(1.0, delta, activations.get(activations.size() - 2));
+        newWeights.set(newWeights.size() - 1, weightDelta);
 
         // backward starting from the second last layer
         // Just using indexes so it is simpler
         for (int backIndex = 2; backIndex < networkSizes.size(); backIndex++) {
-            MatrixJava z = zs.get(zs.size() - backIndex);
-            MatrixJava sigmoidPrime = SIGMOID_PRIME.apply(z);
+            double[] z = zs.get(zs.size() - backIndex);
+            double[] sigmoidPrime = ActivateFunctions.SIGMOID_PRIME.apply(z);
 
-            delta = weights.get(weights.size() - backIndex + 1)
-                    .transpose()
-                    .dot(delta)
-                    .mul(sigmoidPrime);
+            delta = MatrixJNI.mul(1.0, sigmoidPrime, MatrixJNI.daxpy(1.0, weights.get(weights.size() - backIndex + 1), delta));
+
             newBiases.set(newBiases.size() - backIndex, delta);
-            newWeights.set(newWeights.size() - backIndex, delta.dot(activations.get(activations.size() - backIndex - 1)
-                    .transpose()));
+            newWeights.set(newWeights.size() - backIndex, MatrixJNI.daxpy(1.0, delta, activations.get(activations.size() - backIndex - 1)));
         }
 
         // generate a new network and return
-        return new FeedForwardNeuralNetwork(networkSizes, newBiases, newWeights, getActivationFunction());
+        return new FeedForwardNetwork(networkSizes, newBiases, newWeights, getActivationFunction());
     }
 }

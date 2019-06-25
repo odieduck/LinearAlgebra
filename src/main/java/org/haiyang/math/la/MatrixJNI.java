@@ -68,6 +68,24 @@ public final class MatrixJNI {
     }
 
     /**
+     * y = a*x*y.
+     * a is a scalar.
+     * x, y are vectors and we do hadamard product (element wise product)
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public static double[] mul(double val, double[] left, double[] right) {
+        double[] out = new double[left.length];
+        for (int i = 0; i < left.length; i++) {
+            out[i] = val * left[i] * right[i];
+        }
+
+        return out;
+    }
+
+    /**
      * x + y
      * x is a vector
      * y is a vector
@@ -116,7 +134,7 @@ public final class MatrixJNI {
      * A is a matrix, general format, column major
      * x is a vector
      * y is a vector
-     * alpha and beta are scala
+     * alpha and beta are scalar
      *
      * @param alpha
      * @param matrix
@@ -137,7 +155,7 @@ public final class MatrixJNI {
     /**
      * Performs general matrix alpha * ab + beta * c
      * a, b, c are matrix
-     * alpha, beta are scala
+     * alpha, beta are scalar
      *
      * @param alpha
      * @param m
